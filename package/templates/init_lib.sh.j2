@@ -1,0 +1,8 @@
+mysql -uroot -p{{db_password}} << EOF
+DELETE FROM mysql.user WHERE user='';
+GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY '{{db_password}}';
+GRANT USAGE ON *.* to sst_user@'%' IDENTIFIED BY '{{db_password}}';
+GRANT ALL PRIVILEGES on *.* to sst_user@'%';
+FLUSH PRIVILEGES;
+quit
+EOF

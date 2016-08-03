@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration supports_adding_forbidden="true">
+
+  <property>
+    <name>port</name>
+    <value>7000</value>
+    <description>redis start port.</description>
+  </property>
+  <property>
+    <name>db_path</name>
+    <value>/data/redis/</value>
+    <description>Path where the redis data and log is stored.</description>
+    <value-attributes>
+      <type>directory</type>
+    </value-attributes> 
+  </property>
+    <property>
+    <name>conf_path</name>
+    <value>/var/run/redis</value>
+    <description>Path where the redis pid and conf file stored.</description>
+    <value-attributes>
+      <type>directory</type>
+    </value-attributes> 
+  </property>
+  <property>
+    <name>content</name>
+    <description>This is the jinja template for redis.cnf file</description>
+    <value>
+port {{redis_port}}
+cluster-enabled yes
+cluster-config-file nodes-{{redis_port}}.conf
+cluster-node-timeout 5000
+appendonly yes
+daemonize yes
+pidfile /var/run/redis-{{redis_port}}.pid
+dir {{db_path}}/data/{{redis_port}}
+dbfilename dump-{{redis_port}}.rdb
+appendfilename appendonly-{{redis_port}}.aof
+logfile {{db_path}}/log/redis-{{redis_port}}.log
+    </value>
+  </property>
+  
+
+</configuration>

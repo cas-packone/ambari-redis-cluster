@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<metainfo>
+  <schemaVersion>2.0</schemaVersion>
+  <services>
+    <service>
+      <name>REDIS</name>
+      <displayName>Redis</displayName>
+      <comment>Redis is an open source (BSD licensed), in-memory data structure store, used as database, cache and message broker. It supports data structures such as strings, hashes, lists, sets, sorted sets with range queries, bitmaps, hyperloglogs and geospatial indexes with radius queries. Redis has built-in replication, Lua scripting, LRU eviction, transactions and different levels of on-disk persistence, and provides high availability via Redis Sentinel and automatic partitioning with Redis Cluster.</comment>
+      <version>2.3</version>
+      <components>
+        <component>
+          <name>Redis_node</name>
+          <displayName>Redis Node</displayName>
+          <category>MASTER</category>
+		  <cardinality>3+</cardinality>
+          <commandScript>
+            <script>scripts/redis.py</script>
+            <scriptType>PYTHON</scriptType>
+            <timeout>600</timeout>
+          </commandScript>
+        </component>
+     
+      </components>
+
+      <osSpecifics>
+        <osSpecific>
+          <osFamily>redhat5,redhat6,redhat7</osFamily>
+          <packages>
+            <package>
+              <name>redis</name>
+            </package>
+            <package>
+              <name>ruby</name>
+            </package>
+            <package>
+              <name>rubygems</name>
+            </package>
+          </packages>
+        </osSpecific>
+      </osSpecifics>
+    </service>
+  </services>
+</metainfo>
