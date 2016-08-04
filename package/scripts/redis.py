@@ -1,5 +1,4 @@
-import os
-import base64
+import os,base64,socket
 from time import sleep
 from resource_management import *
 
@@ -24,7 +23,7 @@ class RedisMaster(Script):
         db_path_replica = params.db_path + '/data/' + str(port_replica)
         log_path = params.db_path + '/log/'
         #dir 
-        if not os.path.exists(params.db_path):
+        if not os.path.exists(db_path_master):
             cmd = format('mkdir -p {db_path_master}')        
             Execute(cmd)
         if not os.path.exists(db_path_replica):        
@@ -61,20 +60,36 @@ class RedisMaster(Script):
         for index_p,p in enumerate(ports,start=0):                                        
             cmd =format('redis-server {conf_path}/{p}.cnf')
             Execute(cmd)
-        
+            
+        for index_p,p in enumerate(ports,start=0):
+            cmd=format('redis-cli -c -p {p} <<EOF CONFIG SET protected-mode no \n EOF')
+            Execute(cmd)
+            
         if params.redis_current_host == params.redis_hosts[-1]:
+            sleep(10)
             cluster_service =''
             for index_h,h in enumerate(params.redis_hosts,start=0):
-                for index_p,p in enumerate(ports,start=0):
-                   cluster_service = cluster_service + h + ":" + str(p) + " "
-            cmd =  format('/usr/local/rvm use 2.3.1 --default && redis-trib.rb create --replicas 1 {cluster_service}')
+                ip=socket.gethostbyname(h)
+                for index_p,p in enumerate(ports,start=0):                  
+                   cluster_service = cluster_service + ip + ":" + str(p) + " "
+            params.cluster_service = cluster_service
+            env.set_params(params)  
+            service_packagedir = params.service_packagedir
+            cluster_path = service_packagedir + '/scripts/init_cluster.sh'
+            File(cluster_path,
+             content=Template("init_cluster.sh.j2"),
+             mode=0777
+            )
+            cmd = format("{service_packagedir}/scripts/init_cluster.sh")
+            Execute('echo "Running ' + cmd + '" as root')
             Execute(cmd)            
 
     def stop(self, env):
         import params;
         ports = [params.port,params.port+1]
         for index_p,p in enumerate(ports,start=0):                                        
-            pid_file = '/var/run/redis-' + str(p) + '.pid'                  
+            pid_file = '/var/run/redis-' + str(p) + '.pid'
+            print 'pid_file:' + pid_file            
             cmd =format('cat {pid_file} | xargs kill -9 ')
             try:
                Execute(cmd,logoutput=True)
@@ -86,11 +101,12 @@ class RedisMaster(Script):
         self.start(env)
 
     def status(self, env):
-        import params                    
-        ports = [params.port,params.port+1]
-        for index_p,p in enumerate(ports,start=0):                   
-            pid_file = '/var/run/redis-' + str(p) + '.pid'               
-            check_process_status(pid_file)
+        check_process_status('/var/run/redis-7000.pid')
+        #import params                    
+        #ports = [params.port,params.port+1]
+        #for index_p,p in enumerate(ports,start=0):                   
+        #    pid_file = '/var/run/redis-' + str(p) + '.pid'               
+        #    check_process_status(pid_file)
     
 
 if __name__ == "__main__":
