@@ -82,7 +82,7 @@ class RedisMaster(Script):
             )
             cmd = format("{service_packagedir}/scripts/init_cluster.sh")
             Execute('echo "Running ' + cmd + '" as root')
-            Execute(cmd)            
+            Execute(cmd,ignore_failures=True)            
 
     def stop(self, env):
         import params;
