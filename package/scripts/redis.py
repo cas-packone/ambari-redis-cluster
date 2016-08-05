@@ -65,7 +65,7 @@ class RedisMaster(Script):
             cmd=format('redis-cli -c -p {p} <<EOF CONFIG SET protected-mode no \n EOF')
             Execute(cmd)
             
-        if params.redis_current_host == params.redis_hosts[-1]:
+        if params.redis_current_host == params.redis_hosts[0]:
             sleep(10)
             cluster_service =''
             for index_h,h in enumerate(params.redis_hosts,start=0):
