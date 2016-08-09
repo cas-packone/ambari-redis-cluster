@@ -101,8 +101,11 @@ class RedisMaster(Script):
         self.start(env)
 
     def status(self, env):
-        #import params
-        pid_file= '/var/run/redis-7000.pid'     
+        print "checking status..."
+        #import params;
+        #port = params.port
+        port =7000
+        pid_file= format('/var/run/redis-{port}.pid')     
         check_process_status(pid_file)
         #import params                    
         #ports = [params.port,params.port+1]
