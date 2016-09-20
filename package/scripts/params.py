@@ -1,7 +1,6 @@
 from resource_management import *
 from resource_management.libraries.script.script import Script
 import sys, os, glob,socket
-from resource_management.libraries.functions.version import format_hdp_stack_version
 from resource_management.libraries.functions.default import default
 
 # server configurations
