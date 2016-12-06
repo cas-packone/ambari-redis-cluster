@@ -19,7 +19,7 @@ class RedisMaster(Script):
         import params;
         port = params.port
         db_path_master=  params.db_path + '/data/' + str(params.port)
-        port_replica = params.port + 1
+        port_replica = params.port_replica
         db_path_replica = params.db_path + '/data/' + str(port_replica)
         log_path = params.db_path + '/log/'
         #dir 
@@ -56,7 +56,7 @@ class RedisMaster(Script):
         import params;
         self.configure(env)
         conf_path = params.conf_path
-        ports = [params.port,params.port+1]
+        ports = [params.port,params.port_replica]
         for index_p,p in enumerate(ports,start=0):                                        
             cmd =format('redis-server {conf_path}/{p}.cnf')
             Execute(cmd)
@@ -86,7 +86,7 @@ class RedisMaster(Script):
 
     def stop(self, env):
         import params;
-        ports = [params.port,params.port+1]
+        ports = [params.port,params.port_replica]
         for index_p,p in enumerate(ports,start=0):                                        
             pid_file = '/var/run/redis-' + str(p) + '.pid'
             print 'pid_file:' + pid_file            

@@ -7,6 +7,7 @@ from resource_management.libraries.functions.default import default
 config = Script.get_config()
 
 port=default('configurations/redis/port', '7000')
+port_replica=default('configurations/redis/replica_port', '7001')
 db_path=default('configurations/redis/db_path', '/data/redis/data')
 conf_path=config['configurations']['redis']['conf_path']
 service_packagedir = os.path.realpath(__file__).split('/scripts')[0]

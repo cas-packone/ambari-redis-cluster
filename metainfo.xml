@@ -37,6 +37,17 @@
             </package>
           </packages>
         </osSpecific>
+		<osSpecific>
+		   <osFamily>ubuntu12,ubuntu14,ubuntu16</osFamily>
+           <packages>
+            <package>
+              <name>redis</name>
+            </package>
+            <package>
+              <name>ruby</name>
+            </package>
+          </packages>
+        </osSpecific>
       </osSpecifics>
     </service>
   </services>

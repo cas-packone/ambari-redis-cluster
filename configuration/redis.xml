@@ -9,6 +9,11 @@
     <description>redis start port.</description>
   </property>
   <property>
+    <name>replica_port</name>
+    <value>7001</value>
+    <description>redis start replica port.</description>
+  </property>
+  <property>
     <name>db_path</name>
     <value>/data/redis/</value>
     <description>Path where the redis data and log is stored.</description>
