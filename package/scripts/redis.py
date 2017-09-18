@@ -12,7 +12,10 @@ class RedisMaster(Script):
         service_packagedir = params.service_packagedir
         Execute('find '+params.service_packagedir+' -iname "*.sh" | xargs chmod +x')
         cmd = format("{service_packagedir}/scripts/upgrade_ruby.sh")
-        Execute(cmd)        
+        Execute(cmd)
+        #download redis-trib.rb
+        Execute("wget http://download.redis.io/redis-stable/src/redis-trib.rb -O /usr/bin/redis-trib.rb")
+        Execute("chmod +x /usr/bin/redis-trib.rb")                
                
 
     def configure(self, env):       
