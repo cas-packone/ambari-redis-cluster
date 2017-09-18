@@ -6,7 +6,7 @@
       <name>REDIS</name>
       <displayName>Redis</displayName>
       <comment>Redis is an in-memory data structure store, used as database, cache and message broker.Redis has built-in replication, Lua scripting, LRU eviction, transactions and different levels of on-disk persistence, and provides high availability via Redis Sentinel and automatic partitioning with Redis Cluster.</comment>
-      <version>2.3</version>
+      <version>3.2</version>
       <components>
         <component>
           <name>Redis_node</name>
