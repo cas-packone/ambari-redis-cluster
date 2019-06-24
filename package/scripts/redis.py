@@ -40,7 +40,7 @@ class RedisMaster(Script):
         conf_path=params.conf_path
         cmd = format('mkdir -p {conf_path}')       
         Execute(cmd)
-        
+
         #port        
         params.redis_port=port
         env.set_params(params)
@@ -85,7 +85,14 @@ class RedisMaster(Script):
             )
             cmd = format("{service_packagedir}/scripts/init_cluster.sh")
             Execute('echo "Running ' + cmd + '" as root')
-            Execute(cmd,ignore_failures=True)            
+            Execute(cmd,ignore_failures=True)
+
+        password=params.password
+        if not password.strip():
+            sleep(30) #waiting for cluster initialized
+            for index_p,p in enumerate(ports,start=0):
+                cmd=format('redis-cli -c -p {p} <<EOF CONFIG SET requirepass {password} \n EOF')
+                Execute(cmd)
 
     def stop(self, env):
         import params;
@@ -104,10 +111,10 @@ class RedisMaster(Script):
         self.start(env)
 
     def status(self, env):
-        print "checking status..."
-        #import params;
-        #port = params.port
-        port =7000
+        # print "checking status..."
+        # import params;
+        # port = params.port
+        port = '7000'
         pid_file= format('/var/run/redis-{port}.pid')     
         check_process_status(pid_file)
         #import params                    
