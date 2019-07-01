@@ -11,4 +11,3 @@ else
   rvm use 2.3.1 --default
   gem install redis
 fi
-

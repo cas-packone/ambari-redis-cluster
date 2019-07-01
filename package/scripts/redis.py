@@ -10,13 +10,12 @@ class RedisMaster(Script):
         env.set_params(params) 
         self.install_packages(env)        
         service_packagedir = params.service_packagedir
-        Execute('find '+params.service_packagedir+' -iname "*.sh" | xargs chmod +x')
+        Execute('cd '+params.service_packagedir+'; find -iname "*.sh" | xargs chmod +x')
         cmd = format("{service_packagedir}/scripts/upgrade_ruby.sh")
         Execute(cmd)
         #download redis-trib.rb
         Execute("wget http://download.redis.io/redis-stable/src/redis-trib.rb -O /usr/bin/redis-trib.rb")
-        Execute("chmod +x /usr/bin/redis-trib.rb")                
-               
+        Execute("chmod +x /usr/bin/redis-trib.rb")
 
     def configure(self, env):       
         import params;
@@ -24,7 +23,6 @@ class RedisMaster(Script):
         db_path_master=  params.db_path + '/data/' + str(params.port)
         port_replica = params.port_replica
         db_path_replica = params.db_path + '/data/' + str(port_replica)
-        log_path = params.db_path + '/log/'
         #dir 
         if not os.path.exists(db_path_master):
             cmd = format('mkdir -p {db_path_master}')        
@@ -32,38 +30,17 @@ class RedisMaster(Script):
         if not os.path.exists(db_path_replica):        
             cmd = format('mkdir -p {db_path_replica}')        
             Execute(cmd)
-        if not os.path.exists(log_path):        
-            cmd = format('mkdir -p {log_path}')       
-            Execute(cmd)
-        
-        #conf file 
-        conf_path=params.conf_path
-        cmd = format('mkdir -p {conf_path}')       
-        Execute(cmd)
-
-        #port        
-        params.redis_port=port
-        env.set_params(params)
-        server_cnf_content = InlineTemplate(params.server_cnf_content)   
-        File(format("{conf_path}/{port}.cnf"), content=server_cnf_content)
-        
-        #port_replica
-        params.redis_port=port_replica
-        env.set_params(params)
-        server_cnf_content = InlineTemplate(params.server_cnf_content)   
-        File(format("{conf_path}/{port_replica}.cnf"), content=server_cnf_content)
-                
-        
 
     def start(self, env):
         import params
+        db_path = params.db_path
         self.configure(env)
-        conf_path = params.conf_path
         ports = [params.port,params.port_replica]
         for index_p,p in enumerate(ports,start=0):                                        
-            cmd =format('redis-server {conf_path}/{p}.cnf')
+            cmd =format('echo "redis-server --port {p} --cluster-enabled yes --cluster-config-file nodes-{p}.conf --cluster-node-timeout 5000 --appendonly yes --daemonize yes --pidfile {db_path}/redis-{p}.pid --dir {db_path}/data/{p} --dbfilename dump-{p}.rdb --appendfilename appendonly-{p}.aof --logfile {db_path}/redis-{p}.log"|at now')
             Execute(cmd)
             
+        sleep(5)
         for index_p,p in enumerate(ports,start=0):
             cmd=format('redis-cli -c -p {p} <<EOF CONFIG SET protected-mode no \n EOF')
             Execute(cmd)
@@ -95,10 +72,11 @@ class RedisMaster(Script):
                 Execute(cmd)
 
     def stop(self, env):
-        import params;
+        import params
+        db_path = params.db_path
         ports = [params.port,params.port_replica]
         for index_p,p in enumerate(ports,start=0):                                        
-            pid_file = format('{conf_path}/redis-{p}.pid'
+            pid_file = format('{db_path}/redis-{p}.pid')
             print 'pid_file:' + pid_file            
             cmd =format('cat {pid_file} | xargs kill -9 ')
             try:
@@ -114,8 +92,9 @@ class RedisMaster(Script):
         # print "checking status..."
         # import params;
         # port = params.port
+        db_path = params.db_path 
         port = '7000'
-        pid_file= format('{conf_path}/redis-{port}.pid')     
+        pid_file= format('{db_path}/redis-{p}.pid')     
         check_process_status(pid_file)
         #import params                    
         #ports = [params.port,params.port+1]
