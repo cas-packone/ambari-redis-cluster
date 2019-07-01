@@ -98,7 +98,7 @@ class RedisMaster(Script):
         import params;
         ports = [params.port,params.port_replica]
         for index_p,p in enumerate(ports,start=0):                                        
-            pid_file = '/var/run/redis-' + str(p) + '.pid'
+            pid_file = format('{conf_path}/redis-{p}.pid'
             print 'pid_file:' + pid_file            
             cmd =format('cat {pid_file} | xargs kill -9 ')
             try:
@@ -115,7 +115,7 @@ class RedisMaster(Script):
         # import params;
         # port = params.port
         port = '7000'
-        pid_file= format('/var/run/redis-{port}.pid')     
+        pid_file= format('{conf_path}/redis-{port}.pid')     
         check_process_status(pid_file)
         #import params                    
         #ports = [params.port,params.port+1]
