@@ -28,7 +28,7 @@
   </property>
   <property>
     <name>db_path</name>
-    <value>/data/redis/</value>
+    <value>/data/redis</value>
     <description>Path where the redis data and log is stored.</description>
     <value-attributes>
       <type>directory</type>

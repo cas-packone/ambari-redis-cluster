@@ -89,19 +89,16 @@ class RedisMaster(Script):
         self.start(env)
 
     def status(self, env):
-        # print "checking status..."
-        # import params;
-        # port = params.port
+        import params
+        port = params.port
         db_path = params.db_path 
-        port = '7000'
-        pid_file= format('{db_path}/redis-{p}.pid')     
+        pid_file= format('{db_path}/redis-{port}.pid')     
         check_process_status(pid_file)
-        #import params                    
         #ports = [params.port,params.port+1]
         #for index_p,p in enumerate(ports,start=0):                   
         #    pid_file = '/var/run/redis-' + str(p) + '.pid'               
         #    check_process_status(pid_file)
-    
+     
 
 if __name__ == "__main__":
     RedisMaster().execute()
