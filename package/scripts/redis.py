@@ -56,7 +56,7 @@ class RedisMaster(Script):
         
 
     def start(self, env):
-        import params;
+        import params
         self.configure(env)
         conf_path = params.conf_path
         ports = [params.port,params.port_replica]
