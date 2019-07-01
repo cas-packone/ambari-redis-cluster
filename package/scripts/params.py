@@ -8,6 +8,7 @@ config = Script.get_config()
 password=default('configurations/redis/password', '')
 port=default('configurations/redis/port', '7000')
 port_replica=default('configurations/redis/replica_port', '7001')
+port=default('configurations/redis/port', '7000')
 db_path=default('configurations/redis/db_path', '/data/redis')
 service_packagedir = os.path.realpath(__file__).split('/scripts')[0]
 redis_hosts = config['clusterHostInfo']['redis_node_hosts']
