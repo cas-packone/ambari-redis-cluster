@@ -11,11 +11,8 @@ class RedisMaster(Script):
         self.install_packages(env)        
         service_packagedir = params.service_packagedir
         Execute('cd '+params.service_packagedir+'; find -iname "*.sh" | xargs chmod +x')
-        cmd = format("{service_packagedir}/scripts/upgrade_ruby.sh")
+        cmd = format("{service_packagedir}/scripts/upgrade_ruby.sh; rm -rf {db_path}/data/*")
         Execute(cmd)
-        #download redis-trib.rb
-        Execute("wget http://download.redis.io/redis-stable/src/redis-trib.rb -O /usr/bin/redis-trib.rb")
-        Execute("chmod +x /usr/bin/redis-trib.rb")
 
     def configure(self, env):       
         import params;
@@ -66,7 +63,7 @@ class RedisMaster(Script):
 
         password=params.password
         if not password.strip():
-            sleep(30) #waiting for cluster initialized
+            sleep(40) #waiting for cluster initialized
             for index_p,p in enumerate(ports,start=0):
                 cmd=format('redis-cli -c -p {p} <<EOF CONFIG SET requirepass {password} \n EOF')
                 Execute(cmd)
