@@ -62,8 +62,8 @@ class RedisMaster(Script):
             Execute(cmd,ignore_failures=True)
 
         password=params.password
-        if not password.strip():
-            sleep(40) #waiting for cluster initialized
+        if password.strip():
+            sleep(30) #waiting for cluster initialized
             for index_p,p in enumerate(ports,start=0):
                 cmd=format('redis-cli -c -p {p} <<EOF CONFIG SET requirepass {password} \n EOF')
                 Execute(cmd)
